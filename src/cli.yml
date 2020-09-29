@@ -1,0 +1,11 @@
+name: cspgen
+version: "0.0.1"
+author: Jean-Philippe Bidegain <jp@bidega.in>
+about: Generate CSP from a url
+args:
+  - URL:
+      help: The url to generate the CSP from
+      required: true
+      takes_value: true
+      multiple: false
+      index: 1
