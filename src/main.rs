@@ -36,11 +36,13 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     let fonts = Arc::new(Mutex::new(Vec::new()));
     let images = Arc::new(Mutex::new(Vec::new()));
     let styles = Arc::new(Mutex::new(Vec::new()));
+    let connects = Arc::new(Mutex::new(Vec::new()));
 
     let javascripts2 = javascripts.clone();
     let fonts2 = fonts.clone();
     let images2 = images.clone();
     let styles2 = styles.clone();
+    let connects2 = connects.clone();
 
     tab.enable_request_interception(
         &patterns,
@@ -55,6 +57,7 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
                     "Script" => javascripts2.lock().unwrap().push(host),
                     "Font" => fonts2.lock().unwrap().push(host),
                     "Stylesheet" => styles2.lock().unwrap().push(host),
+                    "XHR" => connects2.lock().unwrap().push(host),
                     _ => {}
                 };
             }
@@ -70,12 +73,14 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     let fonts = dedup(fonts.lock().unwrap().to_vec());
     let images = dedup(images.lock().unwrap().to_vec());
     let styles = dedup(styles.lock().unwrap().to_vec());
+    let connects = dedup(connects.lock().unwrap().to_vec());
 
     let csp = CSP {
         javascripts,
         fonts,
         images,
         styles,
+        connects,
     };
 
     Ok(csp)
