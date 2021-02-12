@@ -1,11 +1,19 @@
 use std::fmt;
+use merge::Merge;
 
+#[derive(Merge)]
 pub struct CSP {
+    #[merge(strategy = merge::vec::append)]
     pub javascripts: Vec<String>,
+    #[merge(strategy = merge::vec::append)]
     pub fonts: Vec<String>,
+    #[merge(strategy = merge::vec::append)]
     pub images: Vec<String>,
+    #[merge(strategy = merge::vec::append)]
     pub styles: Vec<String>,
+    #[merge(strategy = merge::vec::append)]
     pub connects: Vec<String>,
+    #[merge(strategy = merge::vec::append)]
     pub iframes: Vec<String>,
 }
 
