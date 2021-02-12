@@ -1,5 +1,5 @@
-use std::fmt;
 use merge::Merge;
+use std::fmt;
 
 #[derive(Merge)]
 pub struct CSP {
