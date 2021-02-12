@@ -7,5 +7,5 @@ args:
       help: The url to generate the CSP from
       required: true
       takes_value: true
-      multiple: false
+      multiple: true
       index: 1

@@ -5,6 +5,7 @@ use clap::App;
 use headless_chrome::browser::tab::RequestInterceptionDecision;
 use headless_chrome::protocol::network::methods::RequestPattern;
 use headless_chrome::Browser;
+use merge::Merge;
 use std::sync::{Arc, Mutex};
 use url::Url;
 
@@ -95,10 +96,23 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
-    if let Some(url) = matches.value_of("URL") {
+    let urls = matches.values_of("URL");
+
+    let mut csps = CSP {
+        javascripts: Vec::new(),
+        fonts: Vec::new(),
+        images: Vec::new(),
+        styles: Vec::new(),
+        connects: Vec::new(),
+        iframes: Vec::new(),
+    };
+
+    for url in urls.unwrap() {
         match generate_csp(String::from(url)) {
-            Ok(csp) => println!("{}", csp),
+            Ok(csp) => csps.merge(csp),
             Err(e) => println!("error {:?}", e),
         }
     }
+
+    println!("{}", csps);
 }
