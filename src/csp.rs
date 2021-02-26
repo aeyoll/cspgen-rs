@@ -17,6 +17,13 @@ pub struct CSP {
     pub iframes: Vec<String>,
 }
 
+fn dedup(mut vec: Vec<String>) -> Vec<String> {
+    vec.sort_unstable();
+    vec.dedup();
+
+    vec
+}
+
 impl fmt::Display for CSP {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -29,12 +36,12 @@ impl fmt::Display for CSP {
             style-src 'self' data: 'unsafe-inline' {};\
             connect-src 'self' {};\
             frame-src 'self' {};",
-            self.javascripts.join(" "),
-            self.fonts.join(" "),
-            self.images.join(" "),
-            self.styles.join(" "),
-            self.connects.join(" "),
-            self.iframes.join(" ")
+            dedup(self.javascripts.to_owned()).join(" "),
+            dedup(self.fonts.to_owned()).join(" "),
+            dedup(self.images.to_owned()).join(" "),
+            dedup(self.styles.to_owned()).join(" "),
+            dedup(self.connects.to_owned()).join(" "),
+            dedup(self.iframes.to_owned()).join(" ")
         )
     }
 }
