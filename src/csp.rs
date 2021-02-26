@@ -27,7 +27,8 @@ impl fmt::Display for CSP {
             font-src 'self' data: {};\
             img-src 'self' data: {};\
             style-src 'self' data: 'unsafe-inline' {};\
-            connect-src 'self' {}; frame-src 'self' {};",
+            connect-src 'self' {};\
+            frame-src 'self' {};",
             self.javascripts.join(" "),
             self.fonts.join(" "),
             self.images.join(" "),
