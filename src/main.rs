@@ -13,13 +13,6 @@ mod csp;
 
 use csp::CSP;
 
-fn dedup(mut vec: Vec<String>) -> Vec<String> {
-    vec.sort_unstable();
-    vec.dedup();
-
-    vec
-}
-
 fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     let browser = Browser::default()?;
     let tab = browser.wait_for_initial_tab()?;
@@ -73,12 +66,12 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     tab.navigate_to(&url)?;
     tab.wait_until_navigated()?;
 
-    let javascripts = dedup(javascripts.lock().unwrap().to_vec());
-    let fonts = dedup(fonts.lock().unwrap().to_vec());
-    let images = dedup(images.lock().unwrap().to_vec());
-    let styles = dedup(styles.lock().unwrap().to_vec());
-    let connects = dedup(connects.lock().unwrap().to_vec());
-    let iframes = dedup(iframes.lock().unwrap().to_vec());
+    let javascripts = javascripts.lock().unwrap().to_vec();
+    let fonts = fonts.lock().unwrap().to_vec();
+    let images = images.lock().unwrap().to_vec();
+    let styles = styles.lock().unwrap().to_vec();
+    let connects = connects.lock().unwrap().to_vec();
+    let iframes = iframes.lock().unwrap().to_vec();
 
     let csp = CSP {
         javascripts,
