@@ -31,7 +31,7 @@ impl fmt::Display for CSP {
             "Content-Security-Policy: \
             base-uri 'self';\
             default-src 'self';\
-            script-src 'self' 'unsafe-inline' 'unsafe-eval' {};\
+            script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: {};\
             font-src 'self' data: {};\
             img-src 'self' data: {};\
             style-src 'self' data: 'unsafe-inline' {};\
