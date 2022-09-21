@@ -150,7 +150,7 @@ dependencies = [
 
 [[package]]
 name = "cspgen"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "clap",
  "failure",
