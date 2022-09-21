@@ -1,7 +1,4 @@
-#[macro_use]
-extern crate clap;
-use clap::App;
-
+use clap::Parser;
 use headless_chrome::browser::tab::RequestInterceptionDecision;
 use headless_chrome::protocol::network::methods::RequestPattern;
 use headless_chrome::Browser;
@@ -12,6 +9,15 @@ use url::Url;
 mod csp;
 
 use csp::CSP;
+
+
+#[derive(Parser)]
+#[clap(version, about, long_about = None)]
+struct Args {
+   /// The url to generate the CSP from
+   #[clap(value_parser)]
+   urls: Vec<String>,
+}
 
 fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     let browser = Browser::default()?;
@@ -86,10 +92,9 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
 }
 
 fn main() {
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
+   let args = Args::parse();
 
-    let urls = matches.values_of("URL");
+    let urls = args.urls;
 
     let mut csps = CSP {
         javascripts: Vec::new(),
@@ -100,7 +105,7 @@ fn main() {
         iframes: Vec::new(),
     };
 
-    for url in urls.unwrap() {
+    for url in urls {
         match generate_csp(String::from(url)) {
             Ok(csp) => csps.merge(csp),
             Err(e) => println!("error {:?}", e),
