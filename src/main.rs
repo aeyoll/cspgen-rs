@@ -1,6 +1,8 @@
 use clap::Parser;
-use headless_chrome::browser::tab::RequestInterceptionDecision;
-use headless_chrome::protocol::network::methods::RequestPattern;
+use headless_chrome::browser::tab::RequestPausedDecision;
+use headless_chrome::protocol::cdp::Fetch::events::RequestPausedEvent;
+use headless_chrome::protocol::cdp::Fetch::{RequestPattern, RequestStage};
+use headless_chrome::protocol::cdp::Network::ResourceType;
 use headless_chrome::Browser;
 use merge::Merge;
 use std::sync::{Arc, Mutex};
@@ -18,15 +20,17 @@ struct Args {
     urls: Vec<String>,
 }
 
-fn generate_csp(url: String) -> Result<CSP, failure::Error> {
+fn generate_csp(url: String) -> Result<CSP, anyhow::Error> {
     let browser = Browser::default()?;
     let tab = browser.wait_for_initial_tab()?;
 
     let patterns = vec![RequestPattern {
-        url_pattern: Some("*"),
-        resource_type: None,
-        interception_stage: Some("Request"),
+        url_pattern: Some(String::from("*")),
+        resource_Type: None,
+        request_stage: Some(RequestStage::Request),
     }];
+
+    tab.enable_fetch(Some(&patterns), None)?;
 
     let main_url = Url::parse(url.as_str())?;
     let main_host = String::from(main_url.host_str().unwrap());
@@ -45,28 +49,27 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
     let connects2 = connects.clone();
     let iframes2 = iframes.clone();
 
-    tab.enable_request_interception(
-        &patterns,
-        Box::new(move |_transport, _session_id, intercepted| {
-            let url = Url::parse(intercepted.request.url.as_str()).unwrap();
-            let resource_type = intercepted.resource_type.as_str();
+    tab.enable_request_interception(Arc::new(
+        move |_transport, _session_id, intercepted: RequestPausedEvent| {
+            let url = Url::parse(intercepted.params.request.url.as_str()).unwrap();
+            let resource_type = intercepted.params.resource_Type;
             let host = String::from(url.host_str().unwrap());
 
             if host != main_host {
                 match resource_type {
-                    "Image" => images2.lock().unwrap().push(host),
-                    "Script" => javascripts2.lock().unwrap().push(host),
-                    "Font" => fonts2.lock().unwrap().push(host),
-                    "Stylesheet" => styles2.lock().unwrap().push(host),
-                    "XHR" => connects2.lock().unwrap().push(host),
-                    "Document" => iframes2.lock().unwrap().push(host),
+                    ResourceType::Image => images2.lock().unwrap().push(host),
+                    ResourceType::Script => javascripts2.lock().unwrap().push(host),
+                    ResourceType::Font => fonts2.lock().unwrap().push(host),
+                    ResourceType::Stylesheet => styles2.lock().unwrap().push(host),
+                    ResourceType::Xhr => connects2.lock().unwrap().push(host),
+                    ResourceType::Document => iframes2.lock().unwrap().push(host),
                     _ => {}
                 };
             }
 
-            RequestInterceptionDecision::Continue
-        }),
-    )?;
+            RequestPausedDecision::Continue(None)
+        },
+    ))?;
 
     tab.navigate_to(&url)?;
     tab.wait_until_navigated()?;
