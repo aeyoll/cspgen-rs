@@ -1,6 +1,6 @@
 [package]
 name = "cspgen"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["Jean-Philippe Bidegain <jp@bidega.in>"]
 description = "CSP generation from an url"
 edition = "2021"
