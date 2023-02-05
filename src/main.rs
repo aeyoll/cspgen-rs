@@ -10,17 +10,17 @@ use url::Url;
 
 mod csp;
 
-use csp::CSP;
+use csp::Csp;
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// The url to generate the CSP from
+    /// The url to generate the Csp from
     #[clap(value_parser)]
     urls: Vec<String>,
 }
 
-fn generate_csp(url: String) -> Result<CSP, anyhow::Error> {
+fn generate_csp(url: String) -> Result<Csp, anyhow::Error> {
     let browser = Browser::default()?;
     let tab = browser.wait_for_initial_tab()?;
 
@@ -81,7 +81,7 @@ fn generate_csp(url: String) -> Result<CSP, anyhow::Error> {
     let connects = connects.lock().unwrap().to_vec();
     let iframes = iframes.lock().unwrap().to_vec();
 
-    let csp = CSP {
+    let csp = Csp {
         javascripts,
         fonts,
         images,
@@ -98,7 +98,7 @@ fn main() {
 
     let urls = args.urls;
 
-    let mut csps = CSP {
+    let mut csps = Csp {
         javascripts: Vec::new(),
         fonts: Vec::new(),
         images: Vec::new(),

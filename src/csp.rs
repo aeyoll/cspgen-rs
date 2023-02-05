@@ -2,7 +2,7 @@ use merge::Merge;
 use std::fmt;
 
 #[derive(Merge)]
-pub struct CSP {
+pub struct Csp {
     #[merge(strategy = merge::vec::append)]
     pub javascripts: Vec<String>,
     #[merge(strategy = merge::vec::append)]
@@ -24,7 +24,7 @@ fn dedup(mut vec: Vec<String>) -> Vec<String> {
     vec
 }
 
-impl fmt::Display for CSP {
+impl fmt::Display for Csp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
