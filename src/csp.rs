@@ -31,18 +31,18 @@ impl fmt::Display for CSP {
             "Content-Security-Policy: \
             base-uri 'self';\
             default-src 'self';\
-            script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: {};\
-            font-src 'self' data: {};\
-            img-src 'self' data: {};\
-            style-src 'self' data: 'unsafe-inline' {};\
             connect-src 'self' {};\
-            frame-src 'self' {};",
-            dedup(self.javascripts.to_owned()).join(" "),
-            dedup(self.fonts.to_owned()).join(" "),
-            dedup(self.images.to_owned()).join(" "),
-            dedup(self.styles.to_owned()).join(" "),
+            font-src 'self' data: {};\
+            frame-src 'self' {};\
+            img-src 'self' data: {};\
+            script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: {};\
+            style-src 'self' data: 'unsafe-inline' {};",
             dedup(self.connects.to_owned()).join(" "),
-            dedup(self.iframes.to_owned()).join(" ")
+            dedup(self.fonts.to_owned()).join(" "),
+            dedup(self.iframes.to_owned()).join(" "),
+            dedup(self.images.to_owned()).join(" "),
+            dedup(self.javascripts.to_owned()).join(" "),
+            dedup(self.styles.to_owned()).join(" "),
         )
     }
 }

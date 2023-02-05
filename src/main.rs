@@ -10,13 +10,12 @@ mod csp;
 
 use csp::CSP;
 
-
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
 struct Args {
-   /// The url to generate the CSP from
-   #[clap(value_parser)]
-   urls: Vec<String>,
+    /// The url to generate the CSP from
+    #[clap(value_parser)]
+    urls: Vec<String>,
 }
 
 fn generate_csp(url: String) -> Result<CSP, failure::Error> {
@@ -92,7 +91,7 @@ fn generate_csp(url: String) -> Result<CSP, failure::Error> {
 }
 
 fn main() {
-   let args = Args::parse();
+    let args = Args::parse();
 
     let urls = args.urls;
 
