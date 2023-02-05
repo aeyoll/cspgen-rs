@@ -105,7 +105,7 @@ fn main() {
     };
 
     for url in urls {
-        match generate_csp(String::from(url)) {
+        match generate_csp(url) {
             Ok(csp) => csps.merge(csp),
             Err(e) => println!("error {:?}", e),
         }
