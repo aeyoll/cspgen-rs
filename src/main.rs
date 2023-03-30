@@ -22,7 +22,7 @@ struct Args {
 
 fn generate_csp(url: String) -> Result<Csp, anyhow::Error> {
     let browser = Browser::default()?;
-    let tab = browser.wait_for_initial_tab()?;
+    let tab = browser.new_tab()?;
 
     let patterns = vec![RequestPattern {
         url_pattern: Some(String::from("*")),
