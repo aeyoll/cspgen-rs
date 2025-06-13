@@ -1,9 +1,9 @@
 use clap::Parser;
+use headless_chrome::Browser;
 use headless_chrome::browser::tab::RequestPausedDecision;
 use headless_chrome::protocol::cdp::Fetch::events::RequestPausedEvent;
 use headless_chrome::protocol::cdp::Fetch::{RequestPattern, RequestStage};
 use headless_chrome::protocol::cdp::Network::ResourceType;
-use headless_chrome::Browser;
 use merge::Merge;
 use std::sync::{Arc, Mutex};
 use url::Url;
